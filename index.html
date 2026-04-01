@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Planner - Organize Your Learning Journey</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+   <div class="container">
+        <header>
+            <div class="header-left">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1>Smart Study Planner</h1>
+                    <p class="subtitle">Organize your learning journey</p>
+                </div>
+            </div>
+            
+            <div class="auth-section">
+                <div class="auth-buttons" id="authButtons">
+                    <button class="auth-btn" onclick="openLoginModal()">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </button>
+                    <button class="auth-btn primary" onclick="openRegisterModal()">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                </div>
+                
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="userAvatar">U</div>
+                    <div class="user-info">
+                        <div class="user-name" id="userName">User</div>
+                        <div class="user-email" id="userEmail">user@example.com</div>
+                    </div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="welcome-message" id="welcomeMessage" style="display: none;">
+            <h2>Welcome back, <span id="welcomeUserName">User</span>! 👋</h2>
+            <p>Ready to continue your learning journey? Let's make today productive!</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="totalTasks">0</div>
+                <div class="stat-label">Total Tasks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="completedTasks">0</div>
+                <div class="stat-label">Completed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="pendingTasks">0</div>
+                <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="highPriorityTasks">0</div>
+                <div class="stat-label">High Priority</div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <section class="input-section" id="taskInputSection">
+                <h2 class="section-title">Add New Task</h2>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label for="taskName">Task Name</label>
+                        <input type="text" id="taskName" placeholder="Enter your study task" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskDescription">Description (Optional)</label>
+                        <textarea id="taskDescription" rows="3" placeholder="Add more details about your task"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskSubject">Subject</label>
+                        <select id="taskSubject">
+                            <option value="Programming">Programming</option>
+                            <option value="Math">Math</option>
+                            <option value="English">English</option>
+                            <option value="Database">Database</option>
+                            <option value="Science">Science</option>
+                            <option value="History">History</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taskDueDate">Due Date</label>
+                        <input type="date" id="taskDueDate">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <div class="priority-group">
+                            <div class="priority-option priority-high">
+                                <input type="radio" id="highPriority" name="priority" value="High" checked>
+                                <label for="highPriority">High</label>
+                            </div>
+                            <div class="priority-option priority-medium">
+                                <input type="radio" id="mediumPriority" name="priority" value="Medium">
+                                <label for="mediumPriority">Medium</label>
+                            </div>
+                            <div class="priority-option priority-low">
+                                <input type="radio" id="lowPriority" name="priority" value="Low">
+                                <label for="lowPriority">Low</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Task
+                    </button>
+                </form>
+            </section>
+
+            <section class="task-section">
+                <div class="section-header">
+                    <h2 class="section-title">Your Tasks</h2>
+                </div>
+
+                <div class="filter-container">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="pending">Pending</button>
+                    <button class="filter-btn" data-filter="completed">Completed</button>
+                    <button class="filter-btn" data-filter="high">High Priority</button>
+                    <button class="filter-btn" data-filter="today">Due Today</button>
+                </div>
+
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search tasks...">
+                </div>
+
+                <div class="sort-container">
+                    <label for="sortSelect" style="margin-right: 10px;">Sort by:</label>
+                    <select id="sortSelect" class="sort-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="priority">Priority</option>
+                        <option value="dueDate">Due Date</option>
+                    </select>
+                </div>
+
+                <ul class="task-list" id="taskList">
+                    <!-- Tasks will be dynamically added here -->
+                </ul>
+
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No tasks found</h3>
+                    <p id="emptyStateMessage">Add your first task to get started!</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Authentication Modal -->
+    <div class="modal" id="authModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="authModalTitle">Login</h3>
+                <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+            </div>
+            
+            <div class="auth-tabs">
+                <button class="auth-tab active" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form active">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required>
+                        <span class="password-toggle" onclick="togglePassword('loginPassword')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+
+                <div class="form-footer">
+                    Don't have an account? <a href="#" onclick="switchAuthTab('register')">Register here</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" placeholder="Enter your email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <div class="password-container">
+                        <input type="password" id="registerPassword" placeholder="Create a password" required>
+                        <span class="password-toggle" onclick="togglePassword('registerPassword')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <div class="password-container">
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password" required>
+                        <span class="password-toggle" onclick="togglePassword('confirmPassword')">
+                            <i class="fas fa-eye"></i>
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+
+                <div class="form-footer">
+                    Already have an account? <a href="#" onclick="switchAuthTab('login')">Login here</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Task</h3>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editTaskName">Task Name</label>
+                    <input type="text" id="editTaskName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="editTaskDescription">Description</label>
+                    <textarea id="editTaskDescription" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editTaskSubject">Subject</label>
+                    <select id="editTaskSubject">
+                        <option value="Programming">Programming</option>
+                        <option value="Math">Math</option>
+                        <option value="English">English</option>
+                        <option value="Database">Database</option>
+                        <option value="Science">Science</option>
+                        <option value="History">History</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editTaskDueDate">Due Date</label>
+                    <input type="date" id="editTaskDueDate">
+                </div>
+
+                <div class="form-group">
+                    <label>Priority</label>
+                    <div class="priority-group">
+                        <div class="priority-option priority-high">
+                            <input type="radio" id="editHighPriority" name="editPriority" value="High">
+                            <label for="editHighPriority">High</label>
+                        </div>
+                        <div class="priority-option priority-medium">
+                            <input type="radio" id="editMediumPriority" name="editPriority" value="Medium">
+                            <label for="editMediumPriority">Medium</label>
+                        </div>
+                        <div class="priority-option priority-low">
+                            <input type="radio" id="editLowPriority" name="editPriority" value="Low">
+                            <label for="editLowPriority">Low</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Task added successfully!</span>
+    </div>
+
+<script src="script.js"></script>
+</body>
+</html>
